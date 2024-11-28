@@ -174,8 +174,8 @@ class Player:
                 self.y = ground_y + 8
                 self.dy = 0
 
-        # マップ全体での移動制限（45タイル=400px）
-        self.x = max(0, min(self.x, 400 - 8))  # マップの幅に合わせて制限
+        # マップ全体での移動制限（45タイル=360px）
+        self.x = max(0, min(self.x, 360 - 8))  # マップの幅に合わせて制限
 
     def check_collision(self, enemy):
         # 敵との当たり判定
@@ -204,7 +204,7 @@ class App:
         enemies = []
         # tilemapをスキャンして敵を配置
         for y in range(16):
-            for x in range(50):  # 45タイル分スキャン
+            for x in range(45):  # 45タイル分スキャン
                 tile = pyxel.tilemap(0).pget(x, y)
                 if tile == (1, 0):  # 敵のタイル
                     enemies.append(Enemy(x * 8, y * 8))
@@ -231,8 +231,8 @@ class App:
             
             # カメラの位置をプレイヤーに追従（画面中央に表示）
             target_camera_x = self.player.x - pyxel.width // 2
-            # カメラが0より左に行かないようにする（45タイル=400px）
-            self.camera_x = max(0, min(target_camera_x, 400 - pyxel.width))
+            # カメラが0より左に行かないようにする（45タイル=360px）
+            self.camera_x = max(0, min(target_camera_x, 360 - pyxel.width))
             
             # 敵の更新と当たり判定
             for enemy in self.enemies:
@@ -248,8 +248,8 @@ class App:
 
     def draw(self):
         pyxel.cls(0)
-        # カメラ位置を考慮してマップを描画（45タイル=400px）
-        pyxel.bltm(0, 0, 0, self.camera_x, 0, 400, 128)
+        # カメラ位置を考慮してマップを描画（45タイル=360px）
+        pyxel.bltm(0, 0, 0, self.camera_x, 0, 360, 128)
 
         if not self.game_over and not self.game_clear:
             # プレイヤーの描画（実際の位置で描画）
