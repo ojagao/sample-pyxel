@@ -117,7 +117,7 @@ class Player:
                 self.dy = self.jump_strength
                 self.jump_count += 1
         
-        # ジャンプカットオフ（ジャンプボタンを離したときの処理）
+        # ジャンプカットオフ（ジャンプボタンを離した時の処理）
         if not pyxel.btn(pyxel.KEY_SPACE) and self.dy < self.jump_cut_off:
             self.dy = self.jump_cut_off
 
@@ -198,7 +198,12 @@ class App:
         pyxel.init(160, 128)
         pyxel.load('my_resource.pyxres')
         self.init_game()
+        self.is_mobile = self.detect_mobile()  # Flag to detect mobile
         pyxel.run(self.update, self.draw)
+
+    def detect_mobile(self):
+        # Simple detection logic; this can be improved
+        return False  # Set to True if testing on mobile
 
     def spawn_enemies(self):
         enemies = []
@@ -221,7 +226,26 @@ class App:
         self.game_clear = False  # ゲームクリアフラグを追加
         self.camera_x = 0  # カメラのX位置を追加
 
+    def draw_virtual_buttons(self):
+        # Draw D-pad
+        pyxel.rect(10, 100, 20, 20, 7)  # Left
+        pyxel.rect(40, 100, 20, 20, 7)  # Right
+        pyxel.rect(25, 80, 20, 20, 7)  # Up (Jump)
+
+    def handle_touch_input(self):
+        # Simulate key presses based on touch
+        if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON):
+            x, y = pyxel.mouse_x, pyxel.mouse_y
+            if 10 <= x <= 30 and 100 <= y <= 120:
+                pyxel.btn(pyxel.KEY_LEFT)
+            elif 40 <= x <= 60 and 100 <= y <= 120:
+                pyxel.btn(pyxel.KEY_RIGHT)
+            elif 25 <= x <= 45 and 80 <= y <= 100:
+                pyxel.btn(pyxel.KEY_SPACE)
+
     def update(self):
+        if self.is_mobile:
+            self.handle_touch_input()
         if not self.game_over and not self.game_clear:
             self.player.update()
             
@@ -250,6 +274,9 @@ class App:
         pyxel.cls(0)
         # カメラ位置を考慮してマップを描画（45タイル=360px）
         pyxel.bltm(0, 0, 0, self.camera_x, 0, 360, 128)
+
+        if self.is_mobile:
+            self.draw_virtual_buttons()
 
         if not self.game_over and not self.game_clear:
             # プレイヤーの描画（実際の位置で描画）
